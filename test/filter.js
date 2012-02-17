@@ -16,7 +16,7 @@ util.inherits(TestFilterSocketEventHandler, SocketEventHandler);
 
 var testFilterSocketEventHandlerRooms = ["fake", "array"];
 
-TestFilterSocketEventHandler.prototype.rooms = function(channel, userSession, socket) {
+TestFilterSocketEventHandler.prototype.rooms = function(socket) {
   return testFilterSocketEventHandlerRooms;
 };
 
@@ -30,7 +30,7 @@ TestFilterSocketEventHandler.prototype.events = {
 };
 
 TestFilterSocketEventHandler.prototype.filters = {
-  "log": function(otherArguments, cb){
+  "log": function(eventName, otherArguments, cb){
     cb();
   },
 };
@@ -94,11 +94,12 @@ describe("SocketEventHandler", function() {
     var testFilterSocketEventHandler = new TestFilterSocketEventHandler(socket);
 
     var arg = 0;
+    var arg2 = 1;
     _.each(events, function(fn, eventName) {
-      socket.__fakeEmit(eventName, eventName, arg);
+      socket.__fakeEmit(eventName, arg, arg2);
       
       _.each(filters, function(fn, filterName) {
-        sinon.assert.calledWith(fn, [eventName, arg]);
+        sinon.assert.calledWith(fn, eventName, [arg, arg2]);
       });
       arg += 1;
     });

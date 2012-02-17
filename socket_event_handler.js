@@ -12,17 +12,17 @@ function SocketEventHandler(socket, options) {
 
   _.each(this.events, function(handler, eventName) {
     if (this.filters) {
-      handler = this._filter.bind(this, handler.bind(this));
+      handler = this._filter.bind(this, eventName, handler.bind(this));
     }
     this.socket.on(eventName, handler);
   }, this);
 }
 
-SocketEventHandler.prototype._filter = function(handler) {
-  var origArgs = Array.prototype.slice.call(arguments, 1);
+SocketEventHandler.prototype._filter = function(eventName, handler) {
+  var origArgs = Array.prototype.slice.call(arguments, 2);
 
   var appliedFilters = _.map(this.filters, function(filter) { 
-    return filter.bind(this, origArgs);
+    return filter.bind(this, eventName, origArgs);
   }.bind(this));
   
   async.parallel(appliedFilters, function(err) {
