@@ -14,8 +14,13 @@ util.inherits(MySocketEventHandler, SocketEventHandler);
 // prototype.events
 // The key is the name of the event.
 // The property is a function to handle the event.
+
+// Handlers are executed with 'this' as the EventHandler
 MySocketEventHandler.prototype.events = {
   "event-name": function handlerForEventName(args) {
+    if (this.model.isSomething()) {
+      this.model.andSoOn();
+    }
   },
 
   "other-event-name": function handlerForEventName(args) {
@@ -34,7 +39,7 @@ MySocketEventHandler.prototype.rooms = function() {
   return basicRooms;
 };
 
-// filters
+// prototype.filters
 // Similar to the events object.
 // All filters will be run in parallel against
 // all incoming socket events.
