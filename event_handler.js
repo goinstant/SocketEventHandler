@@ -1,14 +1,14 @@
 var async = require('async');
 var _ = require('underscore');
 
-function EventHandler(channel, userSession, socket) {
+function EventHandler(socket, options) {
   this.socket = socket;
   
-  var roomsToJoin = this.rooms();
+  var roomsToJoin = this.rooms && this.rooms();
 
   _.each(roomsToJoin, function(roomName) {
     this.socket.join(roomName);
-  }, this);
+  }.bind(this));
 
   _.each(this.events, function(handler, eventName) {
     if (this.filters) {
@@ -19,11 +19,11 @@ function EventHandler(channel, userSession, socket) {
 }
 
 EventHandler.prototype._filter = function(handler) {
-  var origArgs = Array.prototype.slice.apply(arguments, 1);
+  var origArgs = Array.prototype.slice.call(arguments, 1);
 
   var appliedFilters = _.map(this.filters, function(filter) { 
-    return filter.bind(origArgs);
-  });
+    return filter.bind(this, origArgs);
+  }.bind(this));
   
   async.parallel(appliedFilters, function(err) {
     if (err) {
