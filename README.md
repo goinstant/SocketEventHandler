@@ -11,6 +11,9 @@ function MySocketEventHandler(socket, model) {
 }
 util.inherits(MySocketEventHandler, SocketEventHandler);
 
+// prototype.events
+// The key is the name of the event.
+// The property is a function to handle the event.
 MySocketEventHandler.prototype.events = {
   "event-name": function handlerForEventName(args) {
   },
@@ -19,6 +22,9 @@ MySocketEventHandler.prototype.events = {
   }
 };
 
+// prototype.rooms 
+// A function that returns an array of strings.
+// The EventHandler will subscribe the Socket to all of those rooms. 
 MySocketEventHandler.prototype.rooms = function() {
   // Return an array of rooms you'd like to join from this function
   var basicRooms = ["rooms", "to", "join"];
@@ -28,7 +34,13 @@ MySocketEventHandler.prototype.rooms = function() {
   return basicRooms;
 };
 
-// filters will
+// filters
+// Similar to the events object.
+// All filters will be run in parallel against
+// all incoming socket events.
+
+// Potential use cases include logging
+// and permissions.
 MySocketEventHandler.prototype.filters = {
   "log": function(eventName, originalArguments, callback) {
     if (eventName == "stupid") {
