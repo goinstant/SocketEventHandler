@@ -7,20 +7,20 @@ var EventEmitter = require("events").EventEmitter;
 var assert = require('assert');
 var sinon = require('sinon');
 
-var EventHandler = require('../event_handler').EventHandler;
+var SocketEventHandler = require('../socket_event_handler').SocketEventHandler;
 
-function TestEventHandler(socket, options) {
+function TestSocketEventHandler(socket, options) {
   this.constructor.super_.apply(this, arguments);
 }
-util.inherits(TestEventHandler, EventHandler);
+util.inherits(TestSocketEventHandler, SocketEventHandler);
 
-var testEventHandlerRooms = ["fake", "array"];
+var testSocketEventHandlerRooms = ["fake", "array"];
 
-TestEventHandler.prototype.rooms = function(channel, userSession, socket) {
-  return testEventHandlerRooms;
+TestSocketEventHandler.prototype.rooms = function(channel, userSession, socket) {
+  return testSocketEventHandlerRooms;
 };
 
-TestEventHandler.prototype.events = {
+TestSocketEventHandler.prototype.events = {
   "disconnected" : function thirdRoomName() {
   },
   "finishedLoadingPage": function eventName() {
@@ -41,21 +41,21 @@ function createFakeSocket() {
   return socket;
 }
 
-describe("EventHandler", function() {
+describe("SocketEventHandler", function() {
   var events = events;
 
   it("joins the rooms the room method supplies", function() {
     var socket = createFakeSocket();
-    var testEventHandler = new TestEventHandler(socket);
+    var testSocketEventHandler = new TestSocketEventHandler(socket);
     
-    testEventHandlerRooms.forEach(function(rm) {
+    testSocketEventHandlerRooms.forEach(function(rm) {
       sinon.assert.calledWith(socket.join, rm);
     });
   });
 
   it("subscribes to all socket events", function() {
     var socket = createFakeSocket();
-    var testEventHandler = new TestEventHandler(socket);
+    var testSocketEventHandler = new TestSocketEventHandler(socket);
     
     _.each(events, function(fn, eventName) {
       sinon.assert.calledWith(socket.on, eventName);
@@ -69,7 +69,7 @@ describe("EventHandler", function() {
       sinon.spy(events, eventName);
     });
 
-    var testEventHandler = new TestEventHandler(socket);
+    var testSocketEventHandler = new TestSocketEventHandler(socket);
 
     var fakeArgument = "swoo";
 

@@ -1,7 +1,7 @@
 var async = require('async');
 var _ = require('underscore');
 
-function EventHandler(socket, options) {
+function SocketEventHandler(socket, options) {
   this.socket = socket;
   
   var roomsToJoin = this.rooms && this.rooms();
@@ -18,7 +18,7 @@ function EventHandler(socket, options) {
   }, this);
 }
 
-EventHandler.prototype._filter = function(handler) {
+SocketEventHandler.prototype._filter = function(handler) {
   var origArgs = Array.prototype.slice.call(arguments, 1);
 
   var appliedFilters = _.map(this.filters, function(filter) { 
@@ -35,7 +35,7 @@ EventHandler.prototype._filter = function(handler) {
   }.bind(this));
 };
 
-EventHandler.prototype.broadcast = function broadcast(roomName, includeSelf, eventName) {
+SocketEventHandler.prototype.broadcast = function broadcast(roomName, includeSelf, eventName) {
   var args = Array.prototype.slice.apply(arguments, 2);
 
   this.socket.broadcast.to(roomName).emit.apply(this.socket, arguments);
@@ -45,8 +45,8 @@ EventHandler.prototype.broadcast = function broadcast(roomName, includeSelf, eve
   }
 };
 
-EventHandler.prototype.emit = function emit() {
+SocketEventHandler.prototype.emit = function emit() {
   this.socket.apply(this.socket, arguments);
 };
 
-exports.EventHandler = EventHandler;
+exports.SocketEventHandler = SocketEventHandler;

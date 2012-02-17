@@ -7,20 +7,20 @@ var EventEmitter = require("events").EventEmitter;
 var assert = require('assert');
 var sinon = require('sinon');
 
-var EventHandler = require('../event_handler').EventHandler;
+var SocketEventHandler = require('../socket_event_handler').SocketEventHandler;
 
-function TestFilterEventHandler(socket, options) {
+function TestFilterSocketEventHandler(socket, options) {
   this.constructor.super_.apply(this, arguments);
 }
-util.inherits(TestFilterEventHandler, EventHandler);
+util.inherits(TestFilterSocketEventHandler, SocketEventHandler);
 
-var testFilterEventHandlerRooms = ["fake", "array"];
+var testFilterSocketEventHandlerRooms = ["fake", "array"];
 
-TestFilterEventHandler.prototype.rooms = function(channel, userSession, socket) {
-  return testFilterEventHandlerRooms;
+TestFilterSocketEventHandler.prototype.rooms = function(channel, userSession, socket) {
+  return testFilterSocketEventHandlerRooms;
 };
 
-TestFilterEventHandler.prototype.events = {
+TestFilterSocketEventHandler.prototype.events = {
   "disconnected" : function thirdRoomName() {
   },
   "finishedLoadingPage": function eventName() {
@@ -29,7 +29,7 @@ TestFilterEventHandler.prototype.events = {
   }
 };
 
-TestFilterEventHandler.prototype.filters = {
+TestFilterSocketEventHandler.prototype.filters = {
   "log": function(otherArguments, cb){
     cb();
   },
@@ -51,18 +51,18 @@ function createFakeSocket() {
   return socket;
 }
 
-describe("EventHandler", function() {
+describe("SocketEventHandler", function() {
   it("calls handlers when the socket emits", function() {
-    var events = TestFilterEventHandler.prototype.events;
-    var filters = TestFilterEventHandler.prototype.filters;
+    var events = TestFilterSocketEventHandler.prototype.events;
+    var filters = TestFilterSocketEventHandler.prototype.filters;
 
     var socket = createFakeSocket();
 
     _.each(events, function(fn, eventName) {
-      sinon.spy(TestFilterEventHandler.prototype.events, eventName);
+      sinon.spy(TestFilterSocketEventHandler.prototype.events, eventName);
     });
 
-    var testFilterEventHandler = new TestFilterEventHandler(socket);
+    var testFilterSocketEventHandler = new TestFilterSocketEventHandler(socket);
 
     var fakeArgument = "swoo";
 
@@ -80,8 +80,8 @@ describe("EventHandler", function() {
   it("calls the filters when the socket emits", function() {
     var socket = createFakeSocket();
 
-    var events = TestFilterEventHandler.prototype.events;
-    var filters = TestFilterEventHandler.prototype.filters;
+    var events = TestFilterSocketEventHandler.prototype.events;
+    var filters = TestFilterSocketEventHandler.prototype.filters;
 
     _.each(events, function(fn, eventName) {
       sinon.spy(events, eventName);
@@ -91,7 +91,7 @@ describe("EventHandler", function() {
       sinon.spy(filters, filterName);
     });
 
-    var testFilterEventHandler = new TestFilterEventHandler(socket);
+    var testFilterSocketEventHandler = new TestFilterSocketEventHandler(socket);
 
     var arg = 0;
     _.each(events, function(fn, eventName) {
@@ -111,10 +111,10 @@ describe("EventHandler", function() {
   it("does not call the handler when the filter calls back with an error", function() {
     var socket = createFakeSocket();
 
-    var testFilterEventHandler = new TestFilterEventHandler(socket);
+    var testFilterSocketEventHandler = new TestFilterSocketEventHandler(socket);
 
-    var filters = TestFilterEventHandler.prototype.filters;
-    var events = TestFilterEventHandler.prototype.events;
+    var filters = TestFilterSocketEventHandler.prototype.filters;
+    var events = TestFilterSocketEventHandler.prototype.events;
 
     _.each(events, function(fn, eventName) {
       sinon.spy(events, eventName);
