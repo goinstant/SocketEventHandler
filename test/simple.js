@@ -10,7 +10,7 @@ var sinon = require('sinon');
 var SocketEventHandler = require('../socket_event_handler').SocketEventHandler;
 
 function TestSocketEventHandler(socket, options) {
-  this.constructor.super_.apply(this, arguments);
+  SocketEventHandler.apply(this, arguments);
 }
 util.inherits(TestSocketEventHandler, SocketEventHandler);
 

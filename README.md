@@ -7,7 +7,7 @@ var SocketEventHandler = require('socket_event_handler');
 
 function MySocketEventHandler(socket, model) {
   this.model = model;
-  this.constructor.prototype.super_.apply(this, arguments);
+  SocketEventHandler.apply(this, arguments);
 }
 util.inherits(MySocketEventHandler, SocketEventHandler);
 
