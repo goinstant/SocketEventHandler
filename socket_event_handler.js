@@ -13,6 +13,8 @@ function SocketEventHandler(socket, options) {
   _.each(this.events, function(handler, eventName) {
     if (this.filters) {
       handler = this._filter.bind(this, eventName, handler.bind(this));
+    } else {
+      handler = handler.bind(this);
     }
     this.socket.on(eventName, handler);
   }, this);
