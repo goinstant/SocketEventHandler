@@ -1,11 +1,10 @@
 var util = require('util');
-
 var _ = require("underscore");
-
 var EventEmitter = require("events").EventEmitter;
-
 var assert = require('assert');
 var sinon = require('sinon');
+/* mocha globals for jshint: */
+/*global describe it */
 
 var SocketEventHandler = require('../socket_event_handler').SocketEventHandler;
 
@@ -42,7 +41,6 @@ function createFakeSocket() {
 }
 
 describe("SocketEventHandler", function() {
-  var events = events;
 
   it("joins the rooms the room method supplies", function() {
     var socket = createFakeSocket();
@@ -54,6 +52,7 @@ describe("SocketEventHandler", function() {
   });
 
   it("subscribes to all socket events", function() {
+    var events = TestSocketEventHandler.prototype.events;
     var socket = createFakeSocket();
     var testSocketEventHandler = new TestSocketEventHandler(socket);
     
@@ -64,6 +63,7 @@ describe("SocketEventHandler", function() {
 
   it("calls handlers when the socket emits", function() {
     var socket = createFakeSocket();
+    var events = TestSocketEventHandler.prototype.events;
 
     _.each(events, function(fn, eventName) {
       sinon.spy(events, eventName);
@@ -75,14 +75,11 @@ describe("SocketEventHandler", function() {
 
     _.each(events, function(fn, eventName) {
       socket.__fakeEmit(eventName, fakeArgument);
+      // the call should happen synchronously when there's no filters
+      var call = fn.lastCall;
+      assert.ok(call.calledWith(fakeArgument));
+      assert.ok(call.thisValue === testSocketEventHandler);
     });
 
-    _.each(events, function(fn, eventName) {
-      sinon.assert.calledWith(fn, fakeArgument);
-    });
-
-    _.each(events, function(fn, eventName) {
-      fn.restore();
-    });
   });
 });
