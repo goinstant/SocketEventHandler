@@ -3,8 +3,10 @@
   "version" : "0.0.1",
   "dependencies" : {
     "async": "0.1.10",
+  },
+  "devDependencies": {
     "underscore": "",
-    "jasmine-node":"",
+    "mocha":"",
     "sinon":""
   }
 }
