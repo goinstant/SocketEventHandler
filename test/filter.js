@@ -1,3 +1,4 @@
+// Copyright (c) 2012 GoInstant Inc. See LICENSE for details
 var util = require('util');
 
 var _ = require("underscore");

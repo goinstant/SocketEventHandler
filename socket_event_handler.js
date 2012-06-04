@@ -1,3 +1,4 @@
+// Copyright (c) 2012 GoInstant Inc. See LICENSE for details
 var async = require('async');
 var _ = require('underscore');
 
